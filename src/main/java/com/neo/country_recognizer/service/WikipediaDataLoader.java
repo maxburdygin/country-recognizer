@@ -1,7 +1,6 @@
 package com.neo.country_recognizer.service;
 
 import com.neo.country_recognizer.model.CountryPhoneCode;
-import com.neo.country_recognizer.repository.CountryPhoneCodeRepository;
 import com.neo.country_recognizer.util.JsoupClient;
 import jakarta.annotation.PostConstruct;
 import org.jsoup.nodes.Document;
@@ -20,7 +19,7 @@ public class WikipediaDataLoader {
     private static final String WIKIPEDIA_URL = "https://en.wikipedia.org/wiki/List_of_country_calling_codes#Alphabetical_order";
 
     @Autowired
-    private CountryPhoneCodeRepository repository;
+    private GuavaDataCache cache;
 
     @Autowired
     private JsoupClient jsoupClient;
@@ -32,16 +31,11 @@ public class WikipediaDataLoader {
 
     @Scheduled(cron = "0 * * * * ?") // Выполняется каждую минуту
     public void updateCountryCodes() throws IOException {
-        int count = 0;
-
         Document doc = jsoupClient.getDocument(WIKIPEDIA_URL);
         Element table = doc.select("table.wikitable").first();
         Elements rows = table.select("tr");
 
-        repository.deleteAll(); // TODO - удалить
-
         for (Element row : rows) {
-            count++;
             Elements cols = row.select("td");
             if (cols.size() > 1) {
                 String country = cols.get(0).text();
@@ -58,7 +52,7 @@ public class WikipediaDataLoader {
                     CountryPhoneCode countryPhoneCode = new CountryPhoneCode();
                     countryPhoneCode.setCountry(country);
                     countryPhoneCode.setCode(mainCode);
-                    repository.save(countryPhoneCode);
+                    cache.addCountryPhoneCode(countryPhoneCode);
                 } else {
                     // Сохранение дополнительных кодов
                     for (String additionalCode : additionalCodes) {
@@ -66,7 +60,7 @@ public class WikipediaDataLoader {
                         additionalCountryCode.setCountry(country);
                         additionalCountryCode.setCode(mainCode);
                         additionalCountryCode.setAdditionalCode(additionalCode);
-                        repository.save(additionalCountryCode);
+                        cache.addCountryPhoneCode(additionalCountryCode);
                     }
                 }
             }

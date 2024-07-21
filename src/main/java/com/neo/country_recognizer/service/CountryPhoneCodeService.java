@@ -2,9 +2,11 @@ package com.neo.country_recognizer.service;
 
 import com.neo.country_recognizer.model.CountryPhoneCode;
 import com.neo.country_recognizer.repository.CountryPhoneCodeRepository;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +16,11 @@ import java.util.stream.Collectors;
 public class CountryPhoneCodeService {
     @Autowired
     private CountryPhoneCodeRepository repository;
+
+    @PostConstruct
+    public void loadCountryCodes() throws IOException {
+        repository.deleteAll();
+    }
 
     public CountryPhoneCode findCountryByPhoneNumber(String phoneNumber) {
         for (int i = 3; i >= 0; i--) {
@@ -36,7 +43,6 @@ public class CountryPhoneCodeService {
         return new CountryPhoneCode();
     }
 
-    // Пример метода, где используется сортировка
     private List<CountryPhoneCode> sortCountryCodes(List<CountryPhoneCode> countryCodes) {
         return countryCodes.stream()
                 .sorted(Comparator.comparing(countryPhoneCode ->

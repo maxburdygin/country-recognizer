@@ -37,12 +37,10 @@ public class WikipediaDataLoaderTest {
 
     @Test
     public void testLoadCountryCodes() throws IOException {
-        doNothing().when(repository).deleteAll();
         when(repository.save(any(CountryPhoneCode.class))).thenReturn(null);
 
         dataLoader.loadCountryCodes();
 
-        verify(repository, times(1)).deleteAll();
         verify(repository, times(295)).save(any(CountryPhoneCode.class));
     }
 
