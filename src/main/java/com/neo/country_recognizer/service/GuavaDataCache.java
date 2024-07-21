@@ -5,15 +5,17 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.neo.country_recognizer.model.CountryPhoneCode;
 import com.neo.country_recognizer.repository.CountryPhoneCodeRepository;
+import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -32,9 +34,15 @@ public class GuavaDataCache {
                 .build(new CacheLoader<String, List<CountryPhoneCode>>() {
                     @Override
                     public List<CountryPhoneCode> load(String key) {
-                        return new CopyOnWriteArrayList<>();
+                        logger.debug("Key {} was not found in cache thus been requested from DB", key);
+                        return repository.findByCode(key);
                     }
                 });
+    }
+
+    @PostConstruct
+    public void loadCountryCodes() throws IOException {
+        repository.deleteAll();
     }
 
     @Transactional
@@ -59,6 +67,16 @@ public class GuavaDataCache {
         try {
             return cache.get(code);
         } catch (ExecutionException e) {
+            logger.error("Error accessing cache", e);
+            return new ArrayList<>();
+        }
+    }
+
+    public List<CountryPhoneCode> getCountryPhoneCodesFromCache(String code) {
+        try {
+            List<CountryPhoneCode> list = cache.getIfPresent(code);
+            return list == null ? Collections.emptyList() : list;
+        } catch (Exception e) {
             logger.error("Error accessing cache", e);
             return new ArrayList<>();
         }

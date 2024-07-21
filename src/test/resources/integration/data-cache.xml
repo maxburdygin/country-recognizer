@@ -1,0 +1,17 @@
+<countryCodes>
+    <countryCode>
+        <id>1</id>
+        <country>US</country>
+        <code>1</code>
+    </countryCode>
+    <countryCode>
+        <id>2</id>
+        <country>CA</country>
+        <code>1</code>
+    </countryCode>
+    <countryCode>
+        <id>3</id>
+        <country>RU</country>
+        <code>7</code>
+    </countryCode>
+</countryCodes>

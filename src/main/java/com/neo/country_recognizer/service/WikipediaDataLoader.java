@@ -52,13 +52,11 @@ public class WikipediaDataLoader {
 
 
                 if (additionalCodes.length == 0) {
-                    // Сохранение основного кода
                     CountryPhoneCode countryPhoneCode = new CountryPhoneCode();
                     countryPhoneCode.setCountry(country);
                     countryPhoneCode.setCode(mainCode);
                     cache.addCountryPhoneCode(countryPhoneCode);
                 } else {
-                    // Сохранение дополнительных кодов
                     for (String additionalCode : additionalCodes) {
                         CountryPhoneCode additionalCountryCode = new CountryPhoneCode();
                         additionalCountryCode.setCountry(country);
