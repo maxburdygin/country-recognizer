@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface CountryPhoneCodeRepository extends JpaRepository<CountryPhoneCode, Long> {
     List<CountryPhoneCode> findByCode(String code);
+    List<CountryPhoneCode> findByCodeAndAdditionalCode(String code, String additionalCode);
 }
 

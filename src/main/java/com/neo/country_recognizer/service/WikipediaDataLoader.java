@@ -6,6 +6,8 @@ import jakarta.annotation.PostConstruct;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import java.util.Arrays;
 public class WikipediaDataLoader {
 
     private static final String WIKIPEDIA_URL = "https://en.wikipedia.org/wiki/List_of_country_calling_codes#Alphabetical_order";
+    private static final Logger logger = LoggerFactory.getLogger(WikipediaDataLoader.class);
 
     @Autowired
     private GuavaDataCache cache;
@@ -31,6 +34,7 @@ public class WikipediaDataLoader {
 
     @Scheduled(cron = "0 * * * * ?") // Выполняется каждую минуту
     public void updateCountryCodes() throws IOException {
+        logger.debug("Cron job started");
         Document doc = jsoupClient.getDocument(WIKIPEDIA_URL);
         Element table = doc.select("table.wikitable").first();
         Elements rows = table.select("tr");
@@ -65,5 +69,6 @@ public class WikipediaDataLoader {
                 }
             }
         }
+        logger.debug("Cron job finished");
     }
 }

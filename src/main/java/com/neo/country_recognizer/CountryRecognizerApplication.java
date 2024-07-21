@@ -17,11 +17,11 @@ public class CountryRecognizerApplication {
 	//DONE 6. FRONTEND
 	//DONE 7. TESTS
 	//TODO 8. START from terminal
-	//TODO 9. Logging
+	//DONE 9. Logging
 	//DONE 10. validate number on frontend
-	//TODO 11. Tests for scheduler
-	//TODO 12. Front - if unknown code
-	//TODO 13. Check transactional
+	//DONE 11. Tests for controller
+	//DONE 12. Front - if unknown code
+	//DONE 13. Check transactional
 	//TODO 14. TESTS for job
 	//TODO 15. TESTS for cache
 
