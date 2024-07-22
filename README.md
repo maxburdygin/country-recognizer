@@ -132,3 +132,9 @@ For even more detailed output, you can run Maven with the -X flag to enable debu
 mvn test -X
 ```
 This will provide extensive debug information, including detailed traces of the test execution process.
+
+### Backend request example
+![img.png](img.png)
+
+### Frontend index page
+`http://localhost:8088/index.html`
