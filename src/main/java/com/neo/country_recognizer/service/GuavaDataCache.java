@@ -81,4 +81,8 @@ public class GuavaDataCache {
             return new ArrayList<>();
         }
     }
+
+    public void clear() {
+        cache.invalidateAll();
+    }
 }

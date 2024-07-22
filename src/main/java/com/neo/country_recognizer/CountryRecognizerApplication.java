@@ -8,10 +8,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class CountryRecognizerApplication {
 
-	//TODO 8. START from terminal
 	//TODO 14. TESTS for job
-	//TODO 16. TESTS for uploading from Wiki page
-	//TODO 15. Run TESTS from terminal
+	//TODO return list of countries
+	//TODO logs to spell into console
+	//todo check scheduler in terminal
 
 	public static void main(String[] args) {
 		SpringApplication.run(CountryRecognizerApplication.class, args);
