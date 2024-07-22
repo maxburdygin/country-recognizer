@@ -34,7 +34,7 @@ public class GuavaDataCache {
                 .build(new CacheLoader<String, List<CountryPhoneCode>>() {
                     @Override
                     public List<CountryPhoneCode> load(String key) {
-                        logger.debug("Key {} was not found in cache thus been requested from DB", key);
+                        logger.info("Key {} was not found in cache thus been requested from DB", key);
                         return repository.findByCode(key);
                     }
                 });
@@ -52,10 +52,10 @@ public class GuavaDataCache {
             if (!countryPhoneCodes.contains(countryPhoneCode)) {
                 countryPhoneCodes.add(countryPhoneCode);
                 cache.put(countryPhoneCode.getCode(), countryPhoneCodes);
-                logger.debug("{} was added to cache", countryPhoneCode);
+                logger.info("{} was added to cache", countryPhoneCode);
                 if (repository.findByCodeAndAdditionalCode(countryPhoneCode.getCode(), countryPhoneCode.getAdditionalCode()).isEmpty()) {
                     repository.save(countryPhoneCode);
-                    logger.debug("{} was saved to DB", countryPhoneCode);
+                    logger.info("{} was saved to DB", countryPhoneCode);
                 }
             }
         } catch (ExecutionException e) {

@@ -34,7 +34,7 @@ public class WikipediaDataLoader {
 
     @Scheduled(cron = "0 * * * * ?") // Выполняется каждую минуту
     public void updateCountryCodes() throws IOException {
-        logger.debug("Cron job started");
+        logger.info("Cron job started");
         Document doc = jsoupClient.getDocument(WIKIPEDIA_URL);
         Element table = doc.select("table.wikitable").first();
         Elements rows = table.select("tr");
@@ -67,6 +67,6 @@ public class WikipediaDataLoader {
                 }
             }
         }
-        logger.debug("Cron job finished");
+        logger.info("Cron job finished");
     }
 }
