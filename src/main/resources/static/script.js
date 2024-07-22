@@ -22,12 +22,16 @@ document.getElementById('phoneForm').addEventListener('submit', function(event) 
     // Log the phone number being sent
     console.log('Sending phone number to backend:', phoneNumber);
 
+    // Prepare the JSON body
+    const requestBody = JSON.stringify({ phoneNumber: phoneNumber });
+
     // Send request to backend
-    fetch(`http://localhost:8088/api/country?phoneNumber=${encodeURIComponent(phoneNumber)}`, {
-        method: 'POST', // Убедитесь, что метод совпадает с тем, который используется на сервере
+    fetch('http://localhost:8088/api/country', {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json'
-        }
+        },
+        body: requestBody
     })
     .then(response => {
         // Log the raw response
@@ -42,10 +46,13 @@ document.getElementById('phoneForm').addEventListener('submit', function(event) 
         // Log the parsed JSON data
         console.log('Parsed response data:', data);
 
-        if (data.country) {
-            resultElement.textContent = `Country: ${data.country}`;
+        if (Array.isArray(data) && data.length > 0) {
+            // Extract country names and join them with commas
+            const countryNames = data.map(item => item.country).join(', ');
+            console.log('Country names:', countryNames); // Debugging line
+            resultElement.textContent = `Countries: ${countryNames}`;
         } else {
-            resultElement.textContent = 'Country not found.';
+            resultElement.textContent = 'No countries found for the provided phone number.';
         }
     })
     .catch(error => {

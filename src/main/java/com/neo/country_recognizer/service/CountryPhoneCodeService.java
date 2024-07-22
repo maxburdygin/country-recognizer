@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -15,7 +15,7 @@ public class CountryPhoneCodeService {
     @Autowired
     private GuavaDataCache cache;
 
-    public CountryPhoneCode findCountryByPhoneNumber(String phoneNumber) {
+    public List<CountryPhoneCode> findCountryByPhoneNumber(String phoneNumber) {
         List<CountryPhoneCode> countryCodes = null;
 
         for (int i = 3; i >= 1; i--) {
@@ -37,22 +37,23 @@ public class CountryPhoneCodeService {
         }
 
         if (countryCodes.isEmpty()) {
-            return new CountryPhoneCode();
+            return List.of(new CountryPhoneCode());
         }
-
         countryCodes = sortCountryCodes(countryCodes);
         for (CountryPhoneCode countryPhoneCode : countryCodes) {
             String codeCombined = countryPhoneCode.getCode() + countryPhoneCode.getAdditionalCode();
+            System.out.println(countryPhoneCode);
             if (phoneNumber.startsWith(codeCombined)) {
-                return countryPhoneCode;
+                return countryCodes.stream()
+                        .filter(x -> (Objects.equals(x.getCode(), countryPhoneCode.getCode()) &&
+                                Objects.equals(x.getAdditionalCode(), countryPhoneCode.getAdditionalCode())))
+                        .toList();
             }
         }
 
-        Optional<CountryPhoneCode> result = countryCodes.stream()
+        return countryCodes.stream()
                 .filter(countryPhoneCode -> countryPhoneCode.getAdditionalCode() == null || countryPhoneCode.getAdditionalCode().isEmpty())
-                .findFirst();
-
-        return result.orElseGet(CountryPhoneCode::new);
+                .toList();
     }
 
     private List<CountryPhoneCode> sortCountryCodes(List<CountryPhoneCode> countryCodes) {

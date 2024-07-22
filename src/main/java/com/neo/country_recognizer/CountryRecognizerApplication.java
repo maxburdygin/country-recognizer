@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class CountryRecognizerApplication {
 
 	//TODO return list of countries
+	//TODO json body instead of param
 
 	public static void main(String[] args) {
 		SpringApplication.run(CountryRecognizerApplication.class, args);
