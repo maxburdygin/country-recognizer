@@ -2,13 +2,14 @@ package com.neo.country_recognizer.service;
 
 import com.neo.country_recognizer.model.CountryPhoneCode;
 import com.neo.country_recognizer.util.JsoupClient;
-import jakarta.annotation.PostConstruct;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -27,12 +28,13 @@ public class WikipediaDataLoader {
     @Autowired
     private JsoupClient jsoupClient;
 
-    @PostConstruct
+    @EventListener(ContextRefreshedEvent.class)
+    @Scheduled(cron = "0 * * * * ?")
     public void loadCountryCodes() throws IOException {
         updateCountryCodes();
     }
 
-    @Scheduled(cron = "0 * * * * ?") // Выполняется каждую минуту
+    // Выполняется каждую минуту
     public void updateCountryCodes() throws IOException {
         logger.info("Cron job started");
         Document doc = jsoupClient.getDocument(WIKIPEDIA_URL);
