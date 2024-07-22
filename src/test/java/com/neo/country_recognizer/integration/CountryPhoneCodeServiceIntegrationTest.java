@@ -42,11 +42,11 @@ public class CountryPhoneCodeServiceIntegrationTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        // Load data into cache
+        repository.deleteAll();
+        cache.clear();
         List<CountryPhoneCode> cacheData = loadDataFromXml("/integration/data-cache.xml");
         cacheData.forEach(code -> cache.addCountryPhoneCode(code));
 
-        // Load data into repository
         List<CountryPhoneCode> repoData = loadDataFromXml("/integration/data-repository.xml");
         repository.saveAll(repoData);
     }
@@ -82,21 +82,31 @@ public class CountryPhoneCodeServiceIntegrationTest {
     @Test
     public void testFindCountryByPhoneNumberInCache() {
         String phoneNumber = "79146486117";
-        CountryPhoneCode result = service.findCountryByPhoneNumber(phoneNumber);
-        assertEquals("RU", result.getCountry());
+        List<CountryPhoneCode> results = service.findCountryByPhoneNumber(phoneNumber);
+
+        // Verify the expected country code(s)
+        assertEquals(1, results.size());
+        assertEquals("RU", results.get(0).getCountry());
+        assertEquals("7", results.get(0).getCode());
     }
 
     @Test
     public void testFindCountryByPhoneNumberInDb() {
         String phoneNumber = "86123456789"; // China code
-        CountryPhoneCode result = service.findCountryByPhoneNumber(phoneNumber);
-        assertEquals("CN", result.getCountry());
+        List<CountryPhoneCode> results = service.findCountryByPhoneNumber(phoneNumber);
+
+        // Verify the expected country code(s)
+        assertEquals(1, results.size());
+        assertEquals("CN", results.get(0).getCountry());
+        assertEquals("86", results.get(0).getCode());
     }
 
     @Test
     public void testFindCountryByPhoneNumberNotFound() {
         String phoneNumber = "99912345";
-        CountryPhoneCode result = service.findCountryByPhoneNumber(phoneNumber);
-        assertEquals(new CountryPhoneCode(), result);
+        List<CountryPhoneCode> results = service.findCountryByPhoneNumber(phoneNumber);
+        System.out.println(results);
+        // Verify that no country codes are found
+        assertEquals(0, results.size());
     }
 }

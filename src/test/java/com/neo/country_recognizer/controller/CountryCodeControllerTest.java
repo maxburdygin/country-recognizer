@@ -11,6 +11,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.List;
+
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,37 +40,40 @@ public class CountryCodeControllerTest {
     @Test
     public void testGetCountryByPhoneNumberSuccess() throws Exception {
         String phoneNumber = "1234567890";
-        when(service.findCountryByPhoneNumber(phoneNumber)).thenReturn(countryPhoneCode);
+        when(service.findCountryByPhoneNumber(phoneNumber)).thenReturn(List.of(countryPhoneCode));
 
         mockMvc.perform(post("/api/country")
-                        .param("phoneNumber", phoneNumber))
+                        .contentType("application/json")
+                        .content("{\"phoneNumber\": \"" + phoneNumber + "\"}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.country").value("United States"))
-                .andExpect(jsonPath("$.code").value("1"));
+                .andExpect(jsonPath("$[0].country").value("United States"))
+                .andExpect(jsonPath("$[0].code").value("1"));
     }
 
     @Test
     public void testGetCountryByPhoneNumberNotFound() throws Exception {
         String phoneNumber = "1234567890";
-        when(service.findCountryByPhoneNumber(phoneNumber)).thenReturn(null);
+        when(service.findCountryByPhoneNumber(phoneNumber)).thenReturn(List.of());
 
         mockMvc.perform(post("/api/country")
-                        .param("phoneNumber", phoneNumber))
+                        .contentType("application/json")
+                        .content("{\"phoneNumber\": \"" + phoneNumber + "\"}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").doesNotExist());
+                .andExpect(jsonPath("$").isEmpty());
     }
 
     @Test
     public void testGetCountryByPhoneNumberInvalidPhoneNumber() throws Exception {
         String phoneNumber = "invalid_number";
-        when(service.findCountryByPhoneNumber(phoneNumber)).thenReturn(new CountryPhoneCode());
+        when(service.findCountryByPhoneNumber(phoneNumber)).thenReturn(List.of(new CountryPhoneCode()));
 
         mockMvc.perform(post("/api/country")
-                        .param("phoneNumber", phoneNumber))
+                        .contentType("application/json")
+                        .content("{\"phoneNumber\": \"" + phoneNumber + "\"}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.country").isEmpty())
-                .andExpect(jsonPath("$.code").isEmpty())
-                .andExpect(jsonPath("$.additionalCode").isEmpty());
+                .andExpect(jsonPath("$[0].country").isEmpty())
+                .andExpect(jsonPath("$[0].code").isEmpty())
+                .andExpect(jsonPath("$[0].additionalCode").isEmpty());
     }
 
     @Test
@@ -77,14 +82,16 @@ public class CountryCodeControllerTest {
         when(service.findCountryByPhoneNumber(phoneNumber)).thenThrow(new RuntimeException("Service exception"));
 
         mockMvc.perform(post("/api/country")
-                        .param("phoneNumber", phoneNumber))
+                        .contentType("application/json")
+                        .content("{\"phoneNumber\": \"" + phoneNumber + "\"}"))
                 .andExpect(status().isInternalServerError());
     }
 
     @Test
     public void testPostMethodAndPath() throws Exception {
         mockMvc.perform(post("/api/country")
-                        .param("phoneNumber", "1234567890"))
+                        .contentType("application/json")
+                        .content("{\"phoneNumber\": \"1234567890\"}"))
                 .andExpect(status().isOk());
     }
 }

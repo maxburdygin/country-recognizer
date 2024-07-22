@@ -4,6 +4,7 @@ import com.neo.country_recognizer.model.CountryPhoneCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -37,12 +38,11 @@ public class CountryPhoneCodeService {
         }
 
         if (countryCodes.isEmpty()) {
-            return List.of(new CountryPhoneCode());
+            return Collections.emptyList();
         }
         countryCodes = sortCountryCodes(countryCodes);
         for (CountryPhoneCode countryPhoneCode : countryCodes) {
             String codeCombined = countryPhoneCode.getCode() + countryPhoneCode.getAdditionalCode();
-            System.out.println(countryPhoneCode);
             if (phoneNumber.startsWith(codeCombined)) {
                 return countryCodes.stream()
                         .filter(x -> (Objects.equals(x.getCode(), countryPhoneCode.getCode()) &&

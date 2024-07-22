@@ -41,9 +41,9 @@ public class CountryPhoneCodeServiceTest {
 
         when(cache.getCountryPhoneCodesFromCache(code)).thenReturn(List.of(countryPhoneCode));
 
-        CountryPhoneCode result = service.findCountryByPhoneNumber(phoneNumber);
+        List<CountryPhoneCode> result = service.findCountryByPhoneNumber(phoneNumber);
 
-        assertEquals("Russia", result.getCountry());
+        assertEquals("Russia", result.get(0).getCountry());
         verify(cache, times(1)).getCountryPhoneCodesFromCache(code);
         verify(cache, never()).getCountryPhoneCodes(code);
     }
@@ -60,9 +60,9 @@ public class CountryPhoneCodeServiceTest {
         when(cache.getCountryPhoneCodesFromCache(code)).thenReturn(Collections.emptyList());
         when(cache.getCountryPhoneCodes(code)).thenReturn(List.of(countryPhoneCode));
 
-        CountryPhoneCode result = service.findCountryByPhoneNumber(phoneNumber);
+        List<CountryPhoneCode> result = service.findCountryByPhoneNumber(phoneNumber);
 
-        assertEquals("Russia", result.getCountry());
+        assertEquals("Russia", result.get(0).getCountry());
         verify(cache, times(1)).getCountryPhoneCodesFromCache(code);
         verify(cache, times(1)).getCountryPhoneCodes(code);
     }
@@ -74,9 +74,9 @@ public class CountryPhoneCodeServiceTest {
         when(cache.getCountryPhoneCodesFromCache(anyString())).thenReturn(Collections.emptyList());
         when(cache.getCountryPhoneCodes(anyString())).thenReturn(Collections.emptyList());
 
-        CountryPhoneCode result = service.findCountryByPhoneNumber(phoneNumber);
+        List<CountryPhoneCode> result = service.findCountryByPhoneNumber(phoneNumber);
 
-        assertEquals(new CountryPhoneCode(), result);
+        assertEquals(Collections.emptyList(), result);
     }
 
     @Test
@@ -92,9 +92,10 @@ public class CountryPhoneCodeServiceTest {
 
         when(cache.getCountryPhoneCodesFromCache(code)).thenReturn(List.of(countryPhoneCode));
 
-        CountryPhoneCode result = service.findCountryByPhoneNumber(phoneNumber);
+        List<CountryPhoneCode> result = service.findCountryByPhoneNumber(phoneNumber);
 
-        assertEquals("TestCountry", result.getCountry());
+        assertEquals("TestCountry", result.get(0).getCountry());
+
         verify(cache, times(1)).getCountryPhoneCodesFromCache(code);
         verify(cache, never()).getCountryPhoneCodes(code);
     }
@@ -110,9 +111,9 @@ public class CountryPhoneCodeServiceTest {
 
         when(cache.getCountryPhoneCodesFromCache(code)).thenReturn(List.of(countryPhoneCode));
 
-        CountryPhoneCode result = service.findCountryByPhoneNumber(phoneNumber);
+        List<CountryPhoneCode> result = service.findCountryByPhoneNumber(phoneNumber);
 
-        assertEquals("TestCountry", result.getCountry());
+        assertEquals("TestCountry", result.get(0).getCountry());
         verify(cache, times(1)).getCountryPhoneCodesFromCache(code);
         verify(cache, never()).getCountryPhoneCodes(code);
     }
